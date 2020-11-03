@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CYQK.Test.Model;
+using CYQK.Test.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +33,7 @@ namespace CYQK.Test
             services.AddDbContext<TestContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DbTest")));
             services.AddControllers();
+            services.AddAutoMapper(typeof(AutoMapperConfigs));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

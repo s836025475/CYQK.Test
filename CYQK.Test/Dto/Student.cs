@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using CYQK.Test.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

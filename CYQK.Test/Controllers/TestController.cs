@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CYQK.Test.Dto;
 using CYQK.Test.Model;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +19,14 @@ namespace CYQK.Test.Controllers
     public class TestController : ControllerBase
     {
         private readonly TestContext _testContext;
+        private readonly IMapper _mapper;
 
-        public TestController(TestContext testContext)
+        public TestController(
+            TestContext testContext,
+            IMapper mapper)
         {
             _testContext = testContext;
+            _mapper = mapper;
         }
         // GET: api/<TestController>
         [HttpGet]
@@ -38,8 +43,12 @@ namespace CYQK.Test.Controllers
         }
         [HttpPost]
         //[Consumes("application/x-www-form-urlencoded")]
+        //测试x-www-form-urlencoded请求
         public object FormPost([FromForm] Student stu)
         {
+            //测试AutoMap
+            var entity = _mapper.Map<TestEntity>(stu);
+            var student = _mapper.Map<Student>(entity);
             return "ok";
         }
         // POST api/<TestController>
