@@ -39,10 +39,10 @@ namespace CYQK.Test.Controllers
         }
 
         // GET api/<TestController>/5
-        [HttpGet("{id}")]
+        [HttpGet]
         public string Get(int id)
         {
-            return "value";
+            return "ok";
         }
         [HttpPost]
         //[Consumes("application/x-www-form-urlencoded")]
