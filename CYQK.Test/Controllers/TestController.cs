@@ -70,12 +70,12 @@ namespace CYQK.Test.Controllers
             try
             {
                 //转化请求body
-                var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
-                var test = new TestEntity()
-                {
-                    Name = data.Name,
-                };
-                _testContext.TestEntity.Add(test);
+                //var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
+                //var test = new TestEntity()
+                //{
+                //    Name = data.Name,
+                //};
+                //_testContext.TestEntity.Add(test);
                 //数据添加日志
                 var log = new TestLog
                 {
