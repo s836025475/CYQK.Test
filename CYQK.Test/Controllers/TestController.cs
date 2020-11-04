@@ -62,29 +62,25 @@ namespace CYQK.Test.Controllers
         {
             try
             {
-                try
+                //转化请求body
+                var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
+                var test = new TestEntity()
                 {
-                    var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
-                    var test = new TestEntity()
-                    {
-                        Name = data.Name,
-                    };
-                    _testContext.TestEntity.Add(test);
-                    var log = new TestLog
-                    {
-                        Id = Guid.NewGuid(),
-                        Input = input.ToString(),
-                        Output = "",
-                        CreationTime = DateTime.Now
-                    };
-                    _testContext.TestLog.Add(log);
-                    _testContext.SaveChanges();
-                    return "OK";
-                }
-                catch (Exception ex)
+                    Name = data.Name,
+                };
+                _testContext.TestEntity.Add(test);
+                //数据添加日志
+                var log = new TestLog
                 {
-                    return new { ret = -1, msg = ex.Message };
-                }
+                    Id = Guid.NewGuid(),
+                    Input = input.ToString(),
+                    Output = "",
+                    CreationTime = DateTime.Now
+                };
+                _testContext.TestLog.Add(log);
+                _testContext.SaveChanges();
+                //返回值
+                return "OK";
             }
             catch (Exception ex)
             {
