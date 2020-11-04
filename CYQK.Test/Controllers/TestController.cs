@@ -30,9 +30,12 @@ namespace CYQK.Test.Controllers
         }
         // GET: api/<TestController>
         [HttpGet]
-        public string Get()
+        public List<TestEntity> GetAll(int input)
         {
-            return "ok";
+            int skip = -1;
+            skip = (skip + input) * 5;
+            var result = _testContext.TestEntity.Skip(skip).Take(5).ToList();
+            return result;
         }
 
         // GET api/<TestController>/5
@@ -46,6 +49,8 @@ namespace CYQK.Test.Controllers
         //测试x-www-form-urlencoded请求
         public object FormPost([FromForm] Student stu)
         {
+            //获取请求url里的参数信息
+            string id = Request.Query["id"];
             //测试AutoMap
             var entity = _mapper.Map<TestEntity>(stu);
             var student = _mapper.Map<Student>(entity);
@@ -60,25 +65,20 @@ namespace CYQK.Test.Controllers
                 try
                 {
                     var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
-                    //using (var db = new TestContext())
-                    //{
-                        var test = new TestEntity()
-                        {
-                            //Id = data.Id,
-                            Name = data.Name,
-                        };
+                    var test = new TestEntity()
+                    {
+                        Name = data.Name,
+                    };
                     _testContext.TestEntity.Add(test);
-                        //添加日志
-                        var log = new TestLog
-                        {
-                            Id = Guid.NewGuid(),
-                            Input = input.ToString(),
-                            Output = "",
-                            CreationTime = DateTime.Now
-                        };
+                    var log = new TestLog
+                    {
+                        Id = Guid.NewGuid(),
+                        Input = input.ToString(),
+                        Output = "",
+                        CreationTime = DateTime.Now
+                    };
                     _testContext.TestLog.Add(log);
                     _testContext.SaveChanges();
-                    //}
                     return "OK";
                 }
                 catch (Exception ex)
@@ -88,19 +88,6 @@ namespace CYQK.Test.Controllers
             }
             catch (Exception ex)
             {
-                //using (var db = new TestContext())
-                //{
-                //    //报错输出，添加日志
-                //    var log = new TestLog
-                //    {
-                //        Id = Guid.NewGuid(),
-                //        Input = input.ToString(),
-                //        Output = ex.StackTrace,
-                //        CreationTime = DateTime.Now
-                //    };
-                //    db.TestLog.Add(log);
-                //    db.SaveChanges();
-                //}
                 var log = new TestLog
                 {
                     Id = Guid.NewGuid(),
