@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using CYQK.Test.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,6 +58,11 @@ namespace CYQK.Test.Controllers
             var student = _mapper.Map<Student>(entity);
             return "ok";
         }
+        [HttpPost]
+        public object Post2()
+        {
+            return "success";
+        }
         // POST api/<TestController>
         [HttpPost]
         public object Post([FromBody] object input)
@@ -80,7 +87,11 @@ namespace CYQK.Test.Controllers
                 _testContext.TestLog.Add(log);
                 _testContext.SaveChanges();
                 //返回值
-                return "success";
+                Result result = new Result()
+                {
+                    success = true
+                };
+                return result;
             }
             catch (Exception ex)
             {
@@ -95,7 +106,13 @@ namespace CYQK.Test.Controllers
                 _testContext.SaveChangesAsync();
                 return new { ret = -1, msg = ex.Message };
             }
+        }
 
+        [HttpPost]
+        public object DocumentInstance()
+        {
+
+            return "ok";
         }
 
     }
