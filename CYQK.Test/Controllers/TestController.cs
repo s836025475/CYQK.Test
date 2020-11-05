@@ -75,6 +75,7 @@ namespace CYQK.Test.Controllers
                 //读取请求信息
                 Stream reqStream = Request.Body;
                 string text = "";
+                //异步读取
                 using (StreamReader reader = new StreamReader(reqStream))
                 {
                     text = await reader.ReadToEndAsync();
