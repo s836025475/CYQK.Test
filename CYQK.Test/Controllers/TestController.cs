@@ -61,13 +61,6 @@ namespace CYQK.Test.Controllers
             return "ok";
         }
         [HttpPost]
-        public object Post2()
-        {
-            return "success";
-        }
-        // POST api/<TestController>
-        [HttpPost]
-        //public object Post([FromBody] object input)
         public async Task<object> Post()
         {
             try
@@ -104,11 +97,5 @@ namespace CYQK.Test.Controllers
                 return new { ret = -1, msg = ex.Message };
             }
         }
-        [HttpPost]
-        public object DocumentInstance()
-        {
-            return "ok";
-        }
-
     }
 }
