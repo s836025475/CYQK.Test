@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using CYQK.Test.Dto;
@@ -65,53 +67,46 @@ namespace CYQK.Test.Controllers
         }
         // POST api/<TestController>
         [HttpPost]
-        public object Post([FromBody] object input)
+        //public object Post([FromBody] object input)
+        public async Task<object> Post()
         {
             try
             {
-                //转化请求body
-                //var data = JsonConvert.DeserializeObject<TestEntity>(input.ToString());
-                //var test = new TestEntity()
-                //{
-                //    Name = data.Name,
-                //};
-                //_testContext.TestEntity.Add(test);
+                //读取请求信息
+                Stream reqStream = Request.Body;
+                string text = "";
+                using (StreamReader reader = new StreamReader(reqStream))
+                {
+                    text = await reader.ReadToEndAsync();
+                }
                 //数据添加日志
                 var log = new TestLog
                 {
                     Id = Guid.NewGuid(),
-                    Input = input.ToString(),
-                    Output = "",
+                    Input = text,
                     CreationTime = DateTime.Now
                 };
                 _testContext.TestLog.Add(log);
                 _testContext.SaveChanges();
                 //返回值
-                Result result = new Result()
-                {
-                    success = true
-                };
-                return result;
+                return "success";
             }
             catch (Exception ex)
             {
                 var log = new TestLog
                 {
                     Id = Guid.NewGuid(),
-                    Input = input.ToString(),
                     Output = ex.StackTrace,
                     CreationTime = DateTime.Now
                 };
                 _testContext.TestLog.Add(log);
-                _testContext.SaveChangesAsync();
+                await _testContext.SaveChangesAsync();
                 return new { ret = -1, msg = ex.Message };
             }
         }
-
         [HttpPost]
         public object DocumentInstance()
         {
-
             return "ok";
         }
 
