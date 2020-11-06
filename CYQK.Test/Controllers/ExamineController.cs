@@ -75,19 +75,6 @@ namespace CYQK.Test.Controllers
                 await _testContext.SaveChangesAsync();
                 return new { ret = -1, msg = ex.Message };
             }
-            ////读取json信息
-            //var fileName = @"D:\zjc\new 25.txt";
-            //string data = JsonStr(fileName);
-            //JObject Json = JObject.Parse(data);
-            ////获取CGSqlist
-            //CGSqlist cg = GetCGSQlist(Json);
-            ////获取CgsqListentry
-            //CgsqListentry cle = GetCgsqListentry(Json, cg.Fbillid);
-            ////存入数据库
-            //_testContext.CGSqlist.Add(cg);
-            //_testContext.CgsqListentry.Add(cle);
-            //await _testContext.SaveChangesAsync();
-            //return "ok";
         }
         /// <summary>
         /// AES解密

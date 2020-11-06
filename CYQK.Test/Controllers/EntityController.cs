@@ -18,7 +18,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CYQK.Test.Controllers
 {
-    [Route("zjc/[controller]/[action]")]
+    [Route("ccqk/[controller]/[action]")]
     [ApiController]
     public class EntityController : ControllerBase
     {
