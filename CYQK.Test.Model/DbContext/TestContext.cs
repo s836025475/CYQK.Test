@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CYQK.Test.Model.Examine;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace CYQK.Test.Model
         public virtual DbSet<TestEntity> TestEntity { get; set; }
         public virtual DbSet<DefaultTable> DefaultTable { get; set; }
         public virtual DbSet<TestLog> TestLog { get; set; }
+        public virtual DbSet<CGSqlist> CGSqlist { get; set; }
+        public virtual DbSet<CgsqListentry> CgsqListentry { get; set; }
+        public virtual DbSet<Reqlist> Reqlist { get; set; }
+
 
         public TestContext(DbContextOptions<TestContext> options)
             : base(options)
