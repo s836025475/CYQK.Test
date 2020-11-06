@@ -99,13 +99,6 @@ namespace CYQK.Test.Controllers
 
             return Encoding.UTF8.GetString(resultArray);
         }
-        private string JsonStr(string fileName)
-        {
-            StreamReader sr = new StreamReader(fileName);
-            String data = sr.ReadToEnd();
-            data = data.Replace("\r", string.Empty).Replace("\n", string.Empty).Replace("\t", string.Empty);//去除空格
-            return data;
-        }
         private CGSqlist GetCGSQlist(JObject Json)
         {
             //添加信息
