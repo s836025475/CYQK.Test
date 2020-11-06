@@ -82,7 +82,7 @@ namespace CYQK.Test.Controllers
                 _testContext.TestLog.Add(log);
                 _testContext.SaveChanges();
                 //返回值
-                return "success";
+                return new ReturnMessage { Success = true };
             }
             catch (Exception ex)
             {
