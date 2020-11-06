@@ -20,12 +20,12 @@ namespace CYQK.Test.Controllers
 {
     [Route("cyqk/[controller]/[action]")]
     [ApiController]
-    public class TestController : ControllerBase
+    public class EntityController : ControllerBase
     {
         private readonly TestContext _testContext;
         private readonly IMapper _mapper;
 
-        public TestController(
+        public EntityController(
             TestContext testContext,
             IMapper mapper)
         {
@@ -61,7 +61,7 @@ namespace CYQK.Test.Controllers
             return "ok";
         }
         [HttpPost]
-        public async Task<object> Post()
+        public async Task<object> SendExam()
         {
             try
             {
