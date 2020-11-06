@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CYQK.Test.Model.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20201106024237_ExamineTable")]
-    partial class ExamineTable
+    [Migration("20201106052744_clefbillid")]
+    partial class clefbillid
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,27 +20,6 @@ namespace CYQK.Test.Model.Migrations
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("CYQK.Test.Model.DefaultTable", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Sex")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DefaultTable");
-                });
 
             modelBuilder.Entity("CYQK.Test.Model.Examine.CGSqlist", b =>
                 {
@@ -59,9 +38,12 @@ namespace CYQK.Test.Model.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Freqamount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("FrequestContext")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fsubmitman")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fuseman")
@@ -78,18 +60,18 @@ namespace CYQK.Test.Model.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Fbillid")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Fcostamount")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fcosttype")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Guid");
 
-                    b.ToTable("CgsqListentry");
+                    b.ToTable("t_CgsqListentry");
                 });
 
             modelBuilder.Entity("CYQK.Test.Model.Examine.Reqlist", b =>

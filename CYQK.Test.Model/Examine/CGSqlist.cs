@@ -21,6 +21,7 @@ namespace CYQK.Test.Model.Examine
         /// <summary>
         /// 金额
         /// </summary>
+        [Column(TypeName ="decimal(18,6)")]
         public virtual decimal Freqamount { get; set; }
         /// <summary>
         /// 执行人
@@ -30,6 +31,10 @@ namespace CYQK.Test.Model.Examine
         /// 市场区域
         /// </summary>
         public virtual string FmarkertOrea { get; set; }
+        /// <summary>
+        /// 提交人
+        /// </summary>
+        public virtual string Fsubmitman { get; set; }
         /// <summary>
         /// 申请内容
         /// </summary>

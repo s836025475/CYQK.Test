@@ -17,7 +17,7 @@ namespace CYQK.Test.Model.Examine
         /// <summary>
         /// Id
         /// </summary>
-        public virtual string Id { get; set; }
+        public virtual string Fbillid { get; set; }
         /// <summary>
         /// 费用类型
         /// </summary>

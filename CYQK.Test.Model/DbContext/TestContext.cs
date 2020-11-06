@@ -11,7 +11,6 @@ namespace CYQK.Test.Model
     public class TestContext : DbContext
     {
         public virtual DbSet<TestEntity> TestEntity { get; set; }
-        public virtual DbSet<DefaultTable> DefaultTable { get; set; }
         public virtual DbSet<TestLog> TestLog { get; set; }
         public virtual DbSet<CGSqlist> CGSqlist { get; set; }
         public virtual DbSet<CgsqListentry> CgsqListentry { get; set; }
