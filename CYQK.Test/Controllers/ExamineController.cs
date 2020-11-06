@@ -13,7 +13,7 @@ using Nancy.Json;
 
 namespace CYQK.Test.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("examine/[controller]/[Action]")]
     [ApiController]
     public class ExamineController : ControllerBase
     {
