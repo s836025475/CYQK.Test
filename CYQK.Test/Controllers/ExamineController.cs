@@ -73,7 +73,7 @@ namespace CYQK.Test.Controllers
                 };
                 _testContext.TestLog.Add(log);
                 await _testContext.SaveChangesAsync();
-                return new { ret = -1, msg = ex.Message };
+                return new ReturnMessage { Success = false, Data = ex.Data.ToString() };
             }
         }
         /// <summary>
