@@ -17,21 +17,21 @@ namespace CYQK.Test.Model
         public virtual DbSet<Reqlist> Reqlist { get; set; }
 
 
-        public TestContext(DbContextOptions<TestContext> options)
-            : base(options)
-        {
-
-        }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //public TestContext(DbContextOptions<TestContext> options)
+        //    : base(options)
         //{
-        //    var builder = new ConfigurationBuilder()
-        //    .SetBasePath(Directory.GetCurrentDirectory())
-        //    .AddJsonFile("appsettings.json");
 
-        //    var configuration = builder.Build();
-
-        //    var conn = configuration.GetConnectionString("DbTest");
-        //    optionsBuilder.UseSqlServer(conn);
         //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+            var configuration = builder.Build();
+
+            var conn = configuration.GetConnectionString("DbTest");
+            optionsBuilder.UseSqlServer(conn);
+        }
     }
 }

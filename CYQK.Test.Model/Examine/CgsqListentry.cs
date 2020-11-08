@@ -15,7 +15,7 @@ namespace CYQK.Test.Model.Examine
         [Key]
         public Guid Guid { get; set; }
         /// <summary>
-        /// Id
+        /// Fbillid
         /// </summary>
         public virtual string Fbillid { get; set; }
         /// <summary>

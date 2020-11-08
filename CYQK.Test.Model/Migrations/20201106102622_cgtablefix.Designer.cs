@@ -4,14 +4,16 @@ using CYQK.Test.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CYQK.Test.Model.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20201106102622_cgtablefix")]
+    partial class cgtablefix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,6 @@ namespace CYQK.Test.Model.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("EventTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Fbillid")
                         .HasColumnType("nvarchar(max)");
 
@@ -39,12 +38,6 @@ namespace CYQK.Test.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FmarkertOrea")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormCodeId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormInstId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Freqamount")

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CYQK.Test.Dto;
 using CYQK.Test.Model;
+using CYQK.Test.Model.Examine;
+using CYQK.Test.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -22,80 +24,86 @@ namespace CYQK.Test.Controllers
     [ApiController]
     public class EntityController : ControllerBase
     {
-        private readonly TestContext _testContext;
-        private readonly IMapper _mapper;
+        //private readonly TestContext _testContext;
+        //private readonly IMapper _mapper;
 
-        public EntityController(
-            TestContext testContext,
-            IMapper mapper)
-        {
-            _testContext = testContext;
-            _mapper = mapper;
-        }
-        // GET: api/<TestController>
-        [HttpGet]
-        public List<TestEntity> GetAll(int input)
-        {
-            int skip = -1;
-            skip = (skip + input) * 5;
-            var result = _testContext.TestEntity.Skip(skip).Take(5).ToList();
-            return result;
-        }
+        //public EntityController(
+        //    TestContext testContext,
+        //    IMapper mapper)
+        //{
+        //    _testContext = testContext;
+        //    _mapper = mapper;
+        //}
+        //// GET: api/<TestController>
+        //[HttpGet]
+        //public List<CGSqlist> GetAll(int input)
+        //{
+        //    using (var _testContext = new TestContext())
+        //    {
+        //        int skip = -1;
+        //        skip = (skip + input) * 5;
+        //        var result = _testContext.CGSqlist.Skip(skip).Take(5).ToList();
+        //        return result;
+        //    }
+            
+        //}
 
-        // GET api/<TestController>/5
-        [HttpGet]
-        public string Get(int id)
-        {
-            return "ok";
-        }
-        [HttpPost]
-        //[Consumes("application/x-www-form-urlencoded")]
-        //测试x-www-form-urlencoded请求
-        public object FormPost([FromForm] Student stu)
-        {
-            //获取请求url里的参数信息
-            string id = Request.Query["id"];
-            //测试AutoMap
-            var entity = _mapper.Map<TestEntity>(stu);
-            var student = _mapper.Map<Student>(entity);
-            return "ok";
-        }
-        [HttpPost]
-        public async Task<object> SendExam()
-        {
-            try
-            {
-                //读取请求信息
-                Stream reqStream = Request.Body;
-                string text = "";
-                using (StreamReader reader = new StreamReader(reqStream))
-                {
-                    text = await reader.ReadToEndAsync();
-                }
-                //数据添加日志
-                var log = new TestLog
-                {
-                    Id = Guid.NewGuid(),
-                    Input = text,
-                    CreationTime = DateTime.Now
-                };
-                _testContext.TestLog.Add(log);
-                _testContext.SaveChanges();
-                //返回值
-                return new ReturnMessage { Success = true };
-            }
-            catch (Exception ex)
-            {
-                var log = new TestLog
-                {
-                    Id = Guid.NewGuid(),
-                    Output = ex.StackTrace,
-                    CreationTime = DateTime.Now
-                };
-                _testContext.TestLog.Add(log);
-                await _testContext.SaveChangesAsync();
-                return new { ret = -1, msg = ex.Message };
-            }
-        }
+        //// GET api/<TestController>/5
+        //[HttpGet]
+        //public string Get(int id)
+        //{
+            
+        //    new TimeJob().DoTask();
+        //    return "ok";
+        //}
+        //[HttpPost]
+        ////[Consumes("application/x-www-form-urlencoded")]
+        ////测试x-www-form-urlencoded请求
+        //public object FormPost([FromForm] Student stu)
+        //{
+        //    //获取请求url里的参数信息
+        //    string id = Request.Query["id"];
+        //    //测试AutoMap
+        //    var entity = _mapper.Map<TestEntity>(stu);
+        //    var student = _mapper.Map<Student>(entity);
+        //    return "ok";
+        //}
+        //[HttpPost]
+        //public async Task<object> SendExam()
+        //{
+        //    try
+        //    {
+        //        //读取请求信息
+        //        Stream reqStream = Request.Body;
+        //        string text = "";
+        //        using (StreamReader reader = new StreamReader(reqStream))
+        //        {
+        //            text = await reader.ReadToEndAsync();
+        //        }
+        //        //数据添加日志
+        //        var log = new TestLog
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Input = text,
+        //            CreationTime = DateTime.Now
+        //        };
+        //        _testContext.TestLog.Add(log);
+        //        _testContext.SaveChanges();
+        //        //返回值
+        //        return new ReturnMessage { Success = true };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var log = new TestLog
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Output = ex.StackTrace,
+        //            CreationTime = DateTime.Now
+        //        };
+        //        _testContext.TestLog.Add(log);
+        //        await _testContext.SaveChangesAsync();
+        //        return new { ret = -1, msg = ex.Message };
+        //    }
+        //}
     }
 }

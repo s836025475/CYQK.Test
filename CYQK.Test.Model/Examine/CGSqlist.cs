@@ -9,13 +9,18 @@ namespace CYQK.Test.Model.Examine
     [Table("t_CGSqlist")]
     public class CGSqlist
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
         [Key]
         public virtual long Id { get; set; }
         /// <summary>
-        /// Id
+        /// FormInstId
+        /// </summary>
+        public virtual string FormInstId { get; set; }
+        /// <summary>
+        /// FormCodeId
+        /// </summary>
+        public virtual string FormCodeId { get; set; }
+        /// <summary>
+        /// Fbillid
         /// </summary>
         public virtual string Fbillid { get; set; }
         /// <summary>
@@ -43,5 +48,13 @@ namespace CYQK.Test.Model.Examine
         /// 所属部门
         /// </summary>
         public virtual string Fdepartment { get; set; }
+        /// <summary>
+        /// 第一次输入
+        /// </summary>
+        public virtual bool FirstInput { get; set; }
+        /// <summary>
+        /// 时间
+        /// </summary>
+        public virtual DateTime EventTime { get; set; }
     }
 }

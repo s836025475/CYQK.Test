@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Hangfire;
 
 namespace CYQK.Test
 {
@@ -24,10 +25,14 @@ namespace CYQK.Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TestContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DbTest")));
+            //services.AddDbContext<TestContext>(options =>
+            //   options.UseSqlServer(Configuration.GetConnectionString("DbTest")));
+
             services.AddControllers();
+
             services.AddAutoMapper(typeof(AutoMapperConfigs));
+
+            services.AddTimedJob();
 
             services.AddSwaggerGen(c =>
             {
@@ -82,6 +87,10 @@ namespace CYQK.Test
             {
                 endpoints.MapControllers();
             });
+
+            app.UseTimedJob();
+            //app.UseHangfireDashboard();//配置后台仪表盘
+            //app.UseHangfireServer();//开始使用Hangfire服务
         }
     }
 }
