@@ -92,7 +92,7 @@ namespace CYQK.Test.Controllers
                     var log = new TestLog
                     {
                         Id = Guid.NewGuid(),
-                        Output = ex.StackTrace,
+                        Output = ex.Message,
                         CreationTime = DateTime.Now
                     };
                     _testContext.TestLog.Add(log);
