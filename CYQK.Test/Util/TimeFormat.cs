@@ -22,7 +22,7 @@ namespace CYQK.Test.Util
         /// </summary> 
         public static DateTime ToLocalTimeTime(this long unix)
         {
-            var dto = DateTimeOffset.FromUnixTimeSeconds(unix);
+            var dto = DateTimeOffset.FromUnixTimeMilliseconds(unix);
             return dto.ToLocalTime().DateTime;
         }
     }

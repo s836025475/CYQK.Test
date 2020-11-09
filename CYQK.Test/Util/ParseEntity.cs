@@ -66,7 +66,7 @@ namespace CYQK.Test.Util
                 FrequestContext = content,//申请内容
                 Fdepartment = department,//所属部门
                 FirstInput = true,
-                //EventTime = 
+                EventTime = eventTime
             };
             return cg;
         }
