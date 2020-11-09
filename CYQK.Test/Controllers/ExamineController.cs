@@ -38,7 +38,7 @@ namespace CYQK.Test.Controllers
             {
                 using (var db = new TestContext())
                 {
-                    return "ok";
+                    return db.CGSqlist.ToList();
                 }
             }
             catch (Exception e)
