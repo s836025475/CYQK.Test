@@ -85,8 +85,8 @@ namespace CYQK.Test.Util
             JObject postParam = new JObject();
             postParam.Add("pageable", pageable);
             postParam.Add("devType", "user");
-            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Today.AddDays(-5))) ;
-            postParam.Add("endTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Today));
+            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now.AddHours(-1))) ;
+            postParam.Add("endTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now));
             postParam.Add("pushType", "failed");
             string jsonRequest = PostUrl(url, postParam.ToString(), "application/json");
             return jsonRequest.ToString();
