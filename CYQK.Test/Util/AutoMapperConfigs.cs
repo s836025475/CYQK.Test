@@ -11,8 +11,8 @@ namespace CYQK.Test.Util
     {
         public AutoMapperConfigs()
         {
-            CreateMap<Student, TestEntity>();
-            CreateMap<TestEntity, Student>();
+            //CreateMap<Student, TestEntity>();
+            //CreateMap<TestEntity, Student>();
         }
     }
 }
