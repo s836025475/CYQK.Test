@@ -14,6 +14,10 @@ using CYQK.Test.Dto;
 using System.Security.Cryptography;
 using System.Text;
 using CYQK.Test.Util;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace CYQK.Test.Controllers
 {
@@ -28,11 +32,21 @@ namespace CYQK.Test.Controllers
         //    _testContext = testContext;
         //}
         [HttpGet]
-        public string Get(int id)
+        public object Get(int id)
         {
-
+            try
+            {
+                using (var db = new TestContext())
+                {
+                    return "ok";
+                }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
             //new TimeJob().DoTask();
-            return "ok";
+            
         }
 
         [HttpPost]
