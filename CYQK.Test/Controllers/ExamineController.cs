@@ -18,6 +18,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Net;
+using System.Threading;
 
 namespace CYQK.Test.Controllers
 {
@@ -38,7 +41,8 @@ namespace CYQK.Test.Controllers
             {
                 using (var db = new TestContext())
                 {
-                    return db.CGSqlist.ToList();
+                    var query = db.CGSqlist.ToList();
+                    return "ok";
                 }
             }
             catch (Exception e)
@@ -52,9 +56,9 @@ namespace CYQK.Test.Controllers
         [HttpPost]
         public async Task<object> SendMessage()
         {
-            using (var _testContext = new TestContext())
+            try
             {
-                try
+                using (var _testContext = new TestContext())
                 {
                     //读取请求信息
                     Stream reqStream = Request.Body;
@@ -67,14 +71,17 @@ namespace CYQK.Test.Controllers
                     //获取解密后的字符串
                     string decrypt = AesDecrypt(text, key);
                     JObject json = JObject.Parse(decrypt);
+                    ParseEntity PE = new ParseEntity();
                     //获取CGSqlist
-                    CGSqlist cg = ParseEntity.GetCGSQlist(json);
+                    CGSqlist cg = PE.GetCGSQlist(json);
                     //获取CgsqListentry
-                    CgsqListentry cle = ParseEntity.GetCgsqListentry(json, cg.Fbillid);
+                    CgsqListentry cle = PE.GetCgsqListentry(json, cg.Fbillid);
+                    //获取初始审批痕迹
+                    Reqlist rl = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
                     //存入数据库
                     _testContext.CGSqlist.Add(cg);
                     _testContext.CgsqListentry.Add(cle);
-                    await _testContext.SaveChangesAsync();
+                    _testContext.Reqlist.Add(rl);
                     //数据添加日志
                     var log = new TestLog
                     {
@@ -83,11 +90,16 @@ namespace CYQK.Test.Controllers
                         CreationTime = DateTime.Now
                     };
                     _testContext.TestLog.Add(log);
-                    _testContext.SaveChanges();
+                    await _testContext.SaveChangesAsync();
+                    //创建后台任务读取审批状态
+                    //Timer timer = new Timer();
                     //返回值
                     return new ReturnMessage { Success = true };
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                using (var _testContext = new TestContext())
                 {
                     var log = new TestLog
                     {
@@ -125,6 +137,61 @@ namespace CYQK.Test.Controllers
 
             return Encoding.UTF8.GetString(resultArray);
         }
-
+        /// <summary>
+        /// 获取审批痕迹
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="formInstId"></param>
+        /// <param name="formCodeId"></param>
+        /// <returns></returns>
+        private string GetFlowRecord(string formInstId, string formCodeId)
+        {
+            string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/getFlowRecord?accessToken=" + GetAccessToken();
+            JObject param = new JObject();
+            param.Add("formInstId", formInstId);
+            param.Add("formCodeId", formCodeId);
+            string response = PostUrl(url, param.ToString(), "application/json");
+            return response;
+        }
+        private string GetAccessToken()
+        {
+            JObject param = new JObject();
+            param.Add("appId", "SP15452095");
+            param.Add("eid", "15452095");
+            param.Add("secret", "dxjGOSdfAtTwCEqmQTDKdAzKfau7bK");
+            param.Add("timestamp", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now));
+            param.Add("scope", "team");
+            String url = "https://yunzhijia.com/gateway/oauth2/token/getAccessToken";
+            string jsonRequest = PostUrl(url, param.ToString(), "application/json");
+            JObject resGroupJson = JObject.Parse(jsonRequest);
+            return resGroupJson["data"]["accessToken"].ToString();
+        }
+        private string PostUrl(string url, string postData, string contentType)
+        {
+            string result = "";
+            try
+            {
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.Method = "POST";
+                req.ContentType = contentType;// "application/x-www-form-urlencoded"
+                req.Timeout = 800;//请求超时时间
+                byte[] data = Encoding.UTF8.GetBytes(postData);
+                req.ContentLength = data.Length;
+                using (Stream reqStream = req.GetRequestStream())
+                {
+                    reqStream.Write(data, 0, data.Length);
+                    reqStream.Close();
+                }
+                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+                Stream stream = resp.GetResponseStream();
+                //获取响应内容
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    result = reader.ReadToEnd();
+                }
+            }
+            catch (Exception e) { }
+            return result;
+        }
     }
 }

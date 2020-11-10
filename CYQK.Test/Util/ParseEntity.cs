@@ -1,17 +1,20 @@
 ﻿using CYQK.Test.Dto.ExamineDto;
 using CYQK.Test.Model.Examine;
+using Microsoft.AspNetCore.Razor.Language;
 using Nancy.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CYQK.Test.Util
 {
-    public static class ParseEntity
+    public class ParseEntity
     {
-        public static CGSqlist GetCGSQlist(JObject Json)
+        public CGSqlist GetCGSQlist(JObject Json)
         {
             //添加信息
             //FormCodeId
@@ -70,7 +73,7 @@ namespace CYQK.Test.Util
             };
             return cg;
         }
-        public static CgsqListentry GetCgsqListentry(JObject Json, string fbillid)
+        public CgsqListentry GetCgsqListentry(JObject Json, string fbillid)
         {
             //添加信息
             //费用类型
@@ -93,28 +96,45 @@ namespace CYQK.Test.Util
             };
             return cle;
         }
-        public static List<PersonInfo> GetPerson(string personStr)
+        public Reqlist GetReqlist(JObject Json, string fbillid)
+        {
+            string jsonData = Json["data"].ToString();
+            JArray jo = (JArray)JsonConvert.DeserializeObject(jsonData);
+            List<ApprovalProcess> ap = jo.ToObject<List<ApprovalProcess>>();
+            var item = ap.Last();
+            //放入List
+            Reqlist reqList = new Reqlist()
+            {
+                Fbilltype = item.ActivityType,//单据类型
+                Fbillno = item.FlowInstId,//单据编号
+                Fbillid = fbillid,//单据Id
+                Fcheckerman = item.Name,//审核人
+                Fcheckstep = item.ActivityName//审核级次
+            };
+            return reqList;
+        }
+        public List<PersonInfo> GetPerson(string personStr)
         {
             List<PersonInfo> persons = new List<PersonInfo>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();
             persons = Serializer.Deserialize<List<PersonInfo>>(personStr);
             return persons;
         }
-        public static List<MarketArea> GetMarket(string marketStr)
+        public List<MarketArea> GetMarket(string marketStr)
         {
             List<MarketArea> markets = new List<MarketArea>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();
             markets = Serializer.Deserialize<List<MarketArea>>(marketStr);
             return markets;
         }
-        public static List<FeeType> GetFeeType(string feeTypeStr)
+        public List<FeeType> GetFeeType(string feeTypeStr)
         {
             List<FeeType> feeTypes = new List<FeeType>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();
             feeTypes = Serializer.Deserialize<List<FeeType>>(feeTypeStr);
             return feeTypes;
         }
-        public static List<DeptInfo> GetDept(string deptStr)
+        public List<DeptInfo> GetDept(string deptStr)
         {
             List<DeptInfo> deptInfo = new List<DeptInfo>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();

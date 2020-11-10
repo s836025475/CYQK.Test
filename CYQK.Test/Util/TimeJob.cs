@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,10 +46,11 @@ namespace CYQK.Test.Util
                     {
                         //解析数据存入数据库
                         //获取CGSqlist
-                        CGSqlist cg = ParseEntity.GetCGSQlist(jObject);
+                        ParseEntity PE = new ParseEntity();
+                        CGSqlist cg = PE.GetCGSQlist(jObject);
                         cg.FirstInput = false;
                         //获取CgsqListentry
-                        CgsqListentry cle = ParseEntity.GetCgsqListentry(jObject, cg.Fbillid);
+                        CgsqListentry cle = PE.GetCgsqListentry(jObject, cg.Fbillid);
                         using (var db = new TestContext())
                         {
                             db.CGSqlist.Add(cg);
@@ -64,7 +66,7 @@ namespace CYQK.Test.Util
             });
             
         }
-        public static string GetInstance(string formInstId, string formCodeId, string accessToken)
+        public string GetInstance(string formInstId, string formCodeId, string accessToken)
         {
             string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/viewFormInst?accessToken=" + accessToken;
             JObject param = new JObject();
@@ -73,7 +75,7 @@ namespace CYQK.Test.Util
             string response = PostUrl(url, param.ToString(), "application/json");
             return response;
         }
-        private static string GetExternalLog(string accessToken)
+        private string GetExternalLog(string accessToken)
         {
             string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/getPushLog?accessToken=" + accessToken;
             //页码信息
@@ -92,7 +94,7 @@ namespace CYQK.Test.Util
             return jsonRequest.ToString();
         }
 
-        private static string GetAccessToken()
+        private string GetAccessToken()
         {
             JObject param = new JObject();
             param.Add("appId", "SP15452095");
@@ -111,7 +113,7 @@ namespace CYQK.Test.Util
         /// <param name="postUrl">URL</param>
         /// <param name="paramData">参数</param>
         /// <returns></returns>
-        public static string PostUrl(string url, string postData, string contentType)
+        public string PostUrl(string url, string postData, string contentType)
         {
             string result = "";
             try
@@ -138,7 +140,7 @@ namespace CYQK.Test.Util
             catch (Exception e) { }
             return result;
         }
-        private static List<PushLogs> GetPushLogs(string jsonstr)
+        private List<PushLogs> GetPushLogs(string jsonstr)
         {
             List<PushLogs> pushLogs = new List<PushLogs>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();
