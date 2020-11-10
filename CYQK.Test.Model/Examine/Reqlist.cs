@@ -34,5 +34,13 @@ namespace CYQK.Test.Model.Examine
         /// 审核级次
         /// </summary>
         public virtual string Fcheckstep { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public virtual DateTime? CreateTime { get; set; }
+        /// <summary>
+        /// 执行时间
+        /// </summary>
+        public virtual DateTime? HandleTime { get; set; }
     }
 }

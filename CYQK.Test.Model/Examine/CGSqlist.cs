@@ -16,6 +16,10 @@ namespace CYQK.Test.Model.Examine
         /// </summary>
         public virtual string FormInstId { get; set; }
         /// <summary>
+        /// 流水号
+        /// </summary>
+        public virtual string SerialNumber { get; set; }
+        /// <summary>
         /// FormCodeId
         /// </summary>
         public virtual string FormCodeId { get; set; }

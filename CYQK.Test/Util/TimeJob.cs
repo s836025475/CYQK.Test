@@ -51,10 +51,12 @@ namespace CYQK.Test.Util
                         cg.FirstInput = false;
                         //获取CgsqListentry
                         CgsqListentry cle = PE.GetCgsqListentry(jObject, cg.Fbillid);
+                        List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(p.FormInstId, p.FormCodeId)), cg.Fbillid);
                         using (var db = new TestContext())
                         {
                             db.CGSqlist.Add(cg);
                             db.CgsqListentry.Add(cle);
+                            db.Reqlist.AddRange(rlList);
                             db.SaveChanges();
                         }
                     }
@@ -69,6 +71,15 @@ namespace CYQK.Test.Util
         public string GetInstance(string formInstId, string formCodeId, string accessToken)
         {
             string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/viewFormInst?accessToken=" + accessToken;
+            JObject param = new JObject();
+            param.Add("formInstId", formInstId);
+            param.Add("formCodeId", formCodeId);
+            string response = PostUrl(url, param.ToString(), "application/json");
+            return response;
+        }
+        private string GetFlowRecord(string formInstId, string formCodeId)
+        {
+            string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/getFlowRecord?accessToken=" + GetAccessToken();
             JObject param = new JObject();
             param.Add("formInstId", formInstId);
             param.Add("formCodeId", formCodeId);

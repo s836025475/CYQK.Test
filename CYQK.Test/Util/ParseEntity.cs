@@ -17,6 +17,8 @@ namespace CYQK.Test.Util
         public CGSqlist GetCGSQlist(JObject Json)
         {
             //添加信息
+            //流水号
+            string serialNumber = Json["data"]["formInfo"]["widgetMap"]["_S_SERIAL"]["value"].ToString();
             //FormCodeId
             string formCodeId = Json["data"]["basicInfo"]["formCodeId"].ToString();
             //FormInstId
@@ -30,6 +32,7 @@ namespace CYQK.Test.Util
             {
                 executor += p.Name.ToString() + ",";
             });
+            executor = executor.Remove(executor.LastIndexOf(','), 1);
             //市场区域
             List<MarketArea> markets = GetMarket(Json["data"]["formInfo"]["widgetMap"]["Ra_0"]["options"].ToString());
             string marketKey = Json["data"]["formInfo"]["widgetMap"]["Ra_0"]["value"].ToString();
@@ -46,6 +49,7 @@ namespace CYQK.Test.Util
             {
                 submitter += p.Name.ToString() + ",";
             });
+            submitter = submitter.Remove(submitter.LastIndexOf(','), 1);
             //申请内容
             string content = Json["data"]["formInfo"]["widgetMap"]["Ta_0"]["value"].ToString();
             //所属部门
@@ -55,12 +59,14 @@ namespace CYQK.Test.Util
             {
                 department += d.Name.ToString() + ",";
             });
+            department = department.Remove(department.LastIndexOf(','), 1);
             //时间
             DateTime eventTime = TimeFormat.ToLocalTimeTime((long)Json["data"]["basicInfo"]["eventTime"]); 
             CGSqlist cg = new CGSqlist()
             {
                 FormCodeId = formCodeId,
                 FormInstId = formInstId,
+                SerialNumber = serialNumber,
                 Fbillid = "DD" + DateTime.Now.ToString("yyMMddHHmmss") + RandomHelper.RandomString(4),//Fbillid
                 Freqamount = applyAmount,//申请金额
                 Fuseman = executor,//执行人
@@ -96,22 +102,32 @@ namespace CYQK.Test.Util
             };
             return cle;
         }
-        public Reqlist GetReqlist(JObject Json, string fbillid)
+        public List<Reqlist> GetReqlist(JObject Json, string fbillid)
         {
             string jsonData = Json["data"].ToString();
             JArray jo = (JArray)JsonConvert.DeserializeObject(jsonData);
             List<ApprovalProcess> ap = jo.ToObject<List<ApprovalProcess>>();
-            var item = ap.Last();
-            //放入List
-            Reqlist reqList = new Reqlist()
+            //获取最近的一次流程
+            List<Reqlist> list = new List<Reqlist>();
+            foreach (var item in ap)
             {
-                Fbilltype = item.ActivityType,//单据类型
-                Fbillno = item.FlowInstId,//单据编号
-                Fbillid = fbillid,//单据Id
-                Fcheckerman = item.Name,//审核人
-                Fcheckstep = item.ActivityName//审核级次
-            };
-            return reqList;
+                Reqlist reqList = new Reqlist()
+                {
+                    Fbilltype = item.ActivityType,//单据类型
+                    Fbillno = item.FlowInstId,//单据编号
+                    Fbillid = fbillid,//单据Id
+                    Fcheckerman = item.Name,//审核人
+                    Fcheckstep = item.ActivityName//审核级次
+                };
+                //创建时间
+                if (item.CreateTime != null)
+                    reqList.CreateTime = TimeFormat.ToLocalTimeTime((long)item.CreateTime);
+                //执行时间
+                if (item.HandleTime != null)
+                    reqList.HandleTime = TimeFormat.ToLocalTimeTime((long)item.HandleTime);
+                list.Add(reqList);
+            }
+            return list;
         }
         public List<PersonInfo> GetPerson(string personStr)
         {

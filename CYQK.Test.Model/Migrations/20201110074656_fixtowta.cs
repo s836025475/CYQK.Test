@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CYQK.Test.Model.Migrations
 {
-    public partial class Create : Migration
+    public partial class fixtowta : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,13 +13,18 @@ namespace CYQK.Test.Model.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    FormInstId = table.Column<string>(nullable: true),
+                    SerialNumber = table.Column<string>(nullable: true),
+                    FormCodeId = table.Column<string>(nullable: true),
                     Fbillid = table.Column<string>(nullable: true),
                     Freqamount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
                     Fuseman = table.Column<string>(nullable: true),
                     FmarkertOrea = table.Column<string>(nullable: true),
                     Fsubmitman = table.Column<string>(nullable: true),
                     FrequestContext = table.Column<string>(nullable: true),
-                    Fdepartment = table.Column<string>(nullable: true)
+                    Fdepartment = table.Column<string>(nullable: true),
+                    FirstInput = table.Column<bool>(nullable: false),
+                    EventTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,7 +36,7 @@ namespace CYQK.Test.Model.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(nullable: false),
-                    Id = table.Column<string>(nullable: true),
+                    Fbillid = table.Column<string>(nullable: true),
                     Fcosttype = table.Column<string>(nullable: true),
                     Fcostamount = table.Column<string>(nullable: true)
                 },
@@ -50,24 +55,13 @@ namespace CYQK.Test.Model.Migrations
                     Fbillno = table.Column<string>(nullable: true),
                     Fbillid = table.Column<string>(nullable: true),
                     Fcheckerman = table.Column<string>(nullable: true),
-                    Fcheckstep = table.Column<string>(nullable: true)
+                    Fcheckstep = table.Column<string>(nullable: true),
+                    CreateTime = table.Column<DateTime>(nullable: true),
+                    HandleTime = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_reqlist", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TestEntity",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TestEntity", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,9 +89,6 @@ namespace CYQK.Test.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_reqlist");
-
-            migrationBuilder.DropTable(
-                name: "TestEntity");
 
             migrationBuilder.DropTable(
                 name: "TestLog");

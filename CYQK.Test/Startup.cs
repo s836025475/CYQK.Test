@@ -34,6 +34,8 @@ namespace CYQK.Test
 
             services.AddTimedJob();
 
+            services.AddHangfire(r => r.UseSqlServerStorage("Data Source=.;Initial Catalog=XXXX;User ID=sa;Password=123qwe"));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -89,8 +91,9 @@ namespace CYQK.Test
             });
 
             app.UseTimedJob();
-            //app.UseHangfireDashboard();//配置后台仪表盘
-            //app.UseHangfireServer();//开始使用Hangfire服务
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
         }
     }
 }

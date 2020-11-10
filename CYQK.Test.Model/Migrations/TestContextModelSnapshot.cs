@@ -59,6 +59,9 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("Fuseman")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("t_CGSqlist");
@@ -91,6 +94,9 @@ namespace CYQK.Test.Model.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Fbillid")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,24 +112,12 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("Fcheckstep")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("HandleTime")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("t_reqlist");
-                });
-
-            modelBuilder.Entity("CYQK.Test.Model.TestEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TestEntity");
                 });
 
             modelBuilder.Entity("CYQK.Test.Model.TestLog", b =>

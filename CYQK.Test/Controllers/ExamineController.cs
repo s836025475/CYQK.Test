@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
+using Hangfire;
 
 namespace CYQK.Test.Controllers
 {
@@ -42,6 +43,7 @@ namespace CYQK.Test.Controllers
                 using (var db = new TestContext())
                 {
                     var query = db.CGSqlist.ToList();
+                    //BackgroundJob.Schedule(() => new BackJob().Job(1), DateTime.Now.AddSeconds(5));
                     return "ok";
                 }
             }
@@ -76,12 +78,13 @@ namespace CYQK.Test.Controllers
                     CGSqlist cg = PE.GetCGSQlist(json);
                     //获取CgsqListentry
                     CgsqListentry cle = PE.GetCgsqListentry(json, cg.Fbillid);
-                    //获取初始审批痕迹
-                    Reqlist rl = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
+                    //获取审批痕迹
+                    List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
                     //存入数据库
                     _testContext.CGSqlist.Add(cg);
                     _testContext.CgsqListentry.Add(cle);
-                    _testContext.Reqlist.Add(rl);
+                    _testContext.Reqlist.AddRange(rlList);
+                    //_testContext.Reqlist.Add(rl);
                     //数据添加日志
                     var log = new TestLog
                     {
@@ -92,7 +95,7 @@ namespace CYQK.Test.Controllers
                     _testContext.TestLog.Add(log);
                     await _testContext.SaveChangesAsync();
                     //创建后台任务读取审批状态
-                    //Timer timer = new Timer();
+                    //BackgroundJob.Schedule(() => new BackJob().GetProcess(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid), DateTime.Now.AddMinutes(3));
                     //返回值
                     return new ReturnMessage { Success = true };
                 }
