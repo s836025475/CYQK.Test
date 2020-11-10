@@ -19,12 +19,17 @@ namespace CYQK.Test.Model.Examine
         /// </summary>
         public virtual string Fbillid { get; set; }
         /// <summary>
-        /// 费用类型
+        /// 用酒名称
         /// </summary>
-        public virtual string Fcosttype { get; set; }
+        public virtual string WineName { get; set; }
         /// <summary>
-        /// 申请金额
+        /// 用酒数量
         /// </summary>
-        public virtual string Fcostamount { get; set; }
+        public virtual int WineCount { get; set; }
+        /// <summary>
+        /// 用酒费用
+        /// </summary>
+        [Column(TypeName = "decimal(18,6)")]
+        public virtual decimal WineFee { get; set; }
     }
 }

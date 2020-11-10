@@ -61,7 +61,26 @@ namespace CYQK.Test.Util
             });
             department = department.Remove(department.LastIndexOf(','), 1);
             //时间
-            DateTime eventTime = TimeFormat.ToLocalTimeTime((long)Json["data"]["basicInfo"]["eventTime"]); 
+            DateTime eventTime = TimeFormat.ToLocalTimeTime((long)Json["data"]["basicInfo"]["eventTime"]);
+            //费用类型
+            List<FeeType> feeTypes = GetFeeType(Json["data"]["formInfo"]["widgetMap"]["Ra_1"]["options"].ToString());
+            string feeKey = Json["data"]["formInfo"]["widgetMap"]["Ra_1"]["value"].ToString();//内容
+            string feeType = "";
+            foreach (var item in feeTypes)
+            {
+                if (item.Key.Equals(feeKey))
+                    feeType = item.Value;
+            }
+            List<WidgetValue> widgetValues = GetWidgetValue(Json["data"]["formInfo"]["detailMap"]["Dd_0"]["widgetValue"].ToString());
+            //总数量
+            int totalCount = 0;
+            //总金额
+            decimal totalFee = 0;
+            widgetValues.ForEach(w =>
+            {
+                totalCount += int.Parse(w.Nu_1);
+                totalFee += decimal.Parse(w.Mo_0);
+            });
             CGSqlist cg = new CGSqlist()
             {
                 FormCodeId = formCodeId,
@@ -75,32 +94,33 @@ namespace CYQK.Test.Util
                 FrequestContext = content,//申请内容
                 Fdepartment = department,//所属部门
                 FirstInput = true,
+                FeeType = feeType,//费用类型
+                TotalCount = totalCount,//总数量
+                TotalFee = totalFee,//总金额
                 EventTime = eventTime
             };
             return cg;
         }
-        public CgsqListentry GetCgsqListentry(JObject Json, string fbillid)
+        public List<CgsqListentry> GetCgsqListentry(JObject Json, string fbillid)
         {
             //添加信息
-            //费用类型
-            List<FeeType> feeTypes = GetFeeType(Json["data"]["formInfo"]["widgetMap"]["Ra_1"]["options"].ToString());
-            string feeKey = Json["data"]["formInfo"]["widgetMap"]["Ra_1"]["value"].ToString();//内容
-            string feeType = "";
-            foreach (var item in feeTypes)
-            {
-                if (item.Key.Equals(feeKey))
-                    feeType = item.Value;
-            }
+            List<WidgetValue> widgetValues = GetWidgetValue(Json["data"]["formInfo"]["detailMap"]["Dd_0"]["widgetValue"].ToString());
             //申请金额
             string applyAmount = Json["data"]["formInfo"]["widgetMap"]["Mo_1"]["value"].ToString();
-            CgsqListentry cle = new CgsqListentry()
+            List<CgsqListentry> cleList = new List<CgsqListentry>();
+            foreach (var item in widgetValues)
             {
-                Guid = Guid.NewGuid(),
-                Fbillid = fbillid,//id
-                Fcosttype = feeType,//费用类型
-                Fcostamount = applyAmount//申请金额
-            };
-            return cle;
+                CgsqListentry cle = new CgsqListentry()
+                {
+                    Guid = Guid.NewGuid(),
+                    Fbillid = fbillid,//id
+                    WineName = item.Te_0,
+                    WineCount = int.Parse(item.Nu_1),
+                    WineFee = decimal.Parse(item.Mo_0)
+                };
+                cleList.Add(cle);
+            }
+            return cleList;
         }
         public List<Reqlist> GetReqlist(JObject Json, string fbillid)
         {
@@ -129,6 +149,11 @@ namespace CYQK.Test.Util
             }
             return list;
         }
+        /// <summary>
+        /// 获取执行人
+        /// </summary>
+        /// <param name="personStr"></param>
+        /// <returns></returns>
         public List<PersonInfo> GetPerson(string personStr)
         {
             List<PersonInfo> persons = new List<PersonInfo>();
@@ -136,6 +161,11 @@ namespace CYQK.Test.Util
             persons = Serializer.Deserialize<List<PersonInfo>>(personStr);
             return persons;
         }
+        /// <summary>
+        /// 获取市场区域
+        /// </summary>
+        /// <param name="marketStr"></param>
+        /// <returns></returns>
         public List<MarketArea> GetMarket(string marketStr)
         {
             List<MarketArea> markets = new List<MarketArea>();
@@ -143,6 +173,11 @@ namespace CYQK.Test.Util
             markets = Serializer.Deserialize<List<MarketArea>>(marketStr);
             return markets;
         }
+        /// <summary>
+        /// 获取费用类型
+        /// </summary>
+        /// <param name="feeTypeStr"></param>
+        /// <returns></returns>
         public List<FeeType> GetFeeType(string feeTypeStr)
         {
             List<FeeType> feeTypes = new List<FeeType>();
@@ -150,12 +185,29 @@ namespace CYQK.Test.Util
             feeTypes = Serializer.Deserialize<List<FeeType>>(feeTypeStr);
             return feeTypes;
         }
+        /// <summary>
+        /// 获取市场
+        /// </summary>
+        /// <param name="deptStr"></param>
+        /// <returns></returns>
         public List<DeptInfo> GetDept(string deptStr)
         {
             List<DeptInfo> deptInfo = new List<DeptInfo>();
             JavaScriptSerializer Serializer = new JavaScriptSerializer();
             deptInfo = Serializer.Deserialize<List<DeptInfo>>(deptStr);
             return deptInfo;
+        }
+        /// <summary>
+        /// 获取用酒
+        /// </summary>
+        /// <param name="widgetValueStr"></param>
+        /// <returns></returns>
+        private static List<WidgetValue> GetWidgetValue(string widgetValueStr)
+        {
+            List<WidgetValue> widgetValues = new List<WidgetValue>();
+            JavaScriptSerializer Serializer = new JavaScriptSerializer();
+            widgetValues = Serializer.Deserialize<List<WidgetValue>>(widgetValueStr);
+            return widgetValues;
         }
     }
 }

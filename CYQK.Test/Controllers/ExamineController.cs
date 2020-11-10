@@ -77,12 +77,12 @@ namespace CYQK.Test.Controllers
                     //获取CGSqlist
                     CGSqlist cg = PE.GetCGSQlist(json);
                     //获取CgsqListentry
-                    CgsqListentry cle = PE.GetCgsqListentry(json, cg.Fbillid);
+                    List<CgsqListentry> cleList = PE.GetCgsqListentry(json, cg.Fbillid);
                     //获取审批痕迹
                     List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
                     //存入数据库
                     _testContext.CGSqlist.Add(cg);
-                    _testContext.CgsqListentry.Add(cle);
+                    _testContext.CgsqListentry.AddRange(cleList);
                     _testContext.Reqlist.AddRange(rlList);
                     //_testContext.Reqlist.Add(rl);
                     //数据添加日志

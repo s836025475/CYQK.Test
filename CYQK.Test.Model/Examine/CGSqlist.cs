@@ -57,6 +57,19 @@ namespace CYQK.Test.Model.Examine
         /// </summary>
         public virtual bool FirstInput { get; set; }
         /// <summary>
+        /// 费用类型
+        /// </summary>
+        public virtual string FeeType { get; set; }
+        /// <summary>
+        /// 总金额
+        /// </summary>
+        [Column(TypeName = "decimal(18,6)")]
+        public virtual decimal TotalFee { get; set; }
+        /// <summary>
+        /// 总数量
+        /// </summary>
+        public virtual long TotalCount { get; set; }
+        /// <summary>
         /// 时间
         /// </summary>
         public virtual DateTime EventTime { get; set; }

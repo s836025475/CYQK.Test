@@ -24,7 +24,7 @@ namespace CYQK.Test.Util
         //{
         //    _testContext = testContext;
         //}
-        [Invoke(Begin = "2020-11-6 18:30", Interval = 1000 * 3600, SkipWhileExecuting = true)]
+        [Invoke(Begin = "2020-11-6 18:30", Interval = 1000 * 5, SkipWhileExecuting = true)]
         public void DoTask()
         {
             //获取AccessToken
@@ -50,12 +50,12 @@ namespace CYQK.Test.Util
                         CGSqlist cg = PE.GetCGSQlist(jObject);
                         cg.FirstInput = false;
                         //获取CgsqListentry
-                        CgsqListentry cle = PE.GetCgsqListentry(jObject, cg.Fbillid);
+                        List<CgsqListentry> cleList = PE.GetCgsqListentry(jObject, cg.Fbillid);
                         List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(p.FormInstId, p.FormCodeId)), cg.Fbillid);
                         using (var db = new TestContext())
                         {
                             db.CGSqlist.Add(cg);
-                            db.CgsqListentry.Add(cle);
+                            db.CgsqListentry.AddRange(cleList);
                             db.Reqlist.AddRange(rlList);
                             db.SaveChanges();
                         }
@@ -98,9 +98,9 @@ namespace CYQK.Test.Util
             JObject postParam = new JObject();
             postParam.Add("pageable", pageable);
             postParam.Add("devType", "user");
-            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now.AddHours(-1))) ;
+            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Today.AddDays(-10))) ;
             postParam.Add("endTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now));
-            postParam.Add("pushType", "failed");
+            postParam.Add("pushType", "all");
             string jsonRequest = PostUrl(url, postParam.ToString(), "application/json");
             return jsonRequest.ToString();
         }

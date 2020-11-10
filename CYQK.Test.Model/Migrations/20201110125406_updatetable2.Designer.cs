@@ -4,14 +4,16 @@ using CYQK.Test.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CYQK.Test.Model.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20201110125406_updatetable2")]
+    partial class updatetable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,11 +87,11 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("Fbillid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WineCount")
-                        .HasColumnType("int");
+                    b.Property<string>("WineCount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("WineFee")
-                        .HasColumnType("decimal(18,6)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("WineName")
                         .HasColumnType("nvarchar(max)");
