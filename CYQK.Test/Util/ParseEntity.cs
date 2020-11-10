@@ -17,6 +17,8 @@ namespace CYQK.Test.Util
         public CGSqlist GetCGSQlist(JObject Json)
         {
             //添加信息
+            //标题
+            string title = Json["data"]["formInfo"]["widgetMap"]["_S_TITLE"]["value"].ToString();
             //流水号
             string serialNumber = Json["data"]["formInfo"]["widgetMap"]["_S_SERIAL"]["value"].ToString();
             //FormCodeId
@@ -83,6 +85,7 @@ namespace CYQK.Test.Util
             });
             CGSqlist cg = new CGSqlist()
             {
+                Title = title,//标题
                 FormCodeId = formCodeId,
                 FormInstId = formInstId,
                 SerialNumber = serialNumber,

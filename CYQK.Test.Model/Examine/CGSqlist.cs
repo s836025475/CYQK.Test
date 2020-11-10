@@ -12,6 +12,10 @@ namespace CYQK.Test.Model.Examine
         [Key]
         public virtual long Id { get; set; }
         /// <summary>
+        /// 标题
+        /// </summary>
+        public virtual string Title { get; set; }
+        /// <summary>
         /// FormInstId
         /// </summary>
         public virtual string FormInstId { get; set; }

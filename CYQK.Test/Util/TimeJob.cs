@@ -41,7 +41,6 @@ namespace CYQK.Test.Util
                 {
                     string ins = GetInstance(p.FormInstId, p.FormCodeId, accessToken);
                     JObject jObject = JObject.Parse(ins);
-                    string success = jObject["success"].ToString();
                     if (jObject["success"].ToString() == "True")
                     {
                         //解析数据存入数据库
