@@ -24,7 +24,7 @@ namespace CYQK.Test.Util
         //{
         //    _testContext = testContext;
         //}
-        [Invoke(Begin = "2020-11-6 18:30", Interval = 1000 * 5, SkipWhileExecuting = true)]
+        [Invoke(Begin = "2020-11-6 18:30", Interval = 1000 * 3600, SkipWhileExecuting = true)]
         public void DoTask()
         {
             //获取AccessToken
@@ -97,9 +97,9 @@ namespace CYQK.Test.Util
             JObject postParam = new JObject();
             postParam.Add("pageable", pageable);
             postParam.Add("devType", "user");
-            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Today.AddDays(-10))) ;
+            postParam.Add("startTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now.AddHours(-1))) ;
             postParam.Add("endTime", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now));
-            postParam.Add("pushType", "all");
+            postParam.Add("pushType", "failed");
             string jsonRequest = PostUrl(url, postParam.ToString(), "application/json");
             return jsonRequest.ToString();
         }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CYQK.Test.Model.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20201110125406_updatetable2")]
-    partial class updatetable2
+    [Migration("20201110133151_Create")]
+    partial class Create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,6 +67,9 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("TotalCount")
                         .HasColumnType("bigint");
 
@@ -87,11 +90,11 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("Fbillid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WineCount")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("WineCount")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("WineFee")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("WineName")
                         .HasColumnType("nvarchar(max)");

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CYQK.Test.Model.Migrations
 {
-    public partial class fixtowta : Migration
+    public partial class Create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,7 @@ namespace CYQK.Test.Model.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
                     FormInstId = table.Column<string>(nullable: true),
                     SerialNumber = table.Column<string>(nullable: true),
                     FormCodeId = table.Column<string>(nullable: true),
@@ -24,6 +25,9 @@ namespace CYQK.Test.Model.Migrations
                     FrequestContext = table.Column<string>(nullable: true),
                     Fdepartment = table.Column<string>(nullable: true),
                     FirstInput = table.Column<bool>(nullable: false),
+                    FeeType = table.Column<string>(nullable: true),
+                    TotalFee = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    TotalCount = table.Column<long>(nullable: false),
                     EventTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -37,8 +41,9 @@ namespace CYQK.Test.Model.Migrations
                 {
                     Guid = table.Column<Guid>(nullable: false),
                     Fbillid = table.Column<string>(nullable: true),
-                    Fcosttype = table.Column<string>(nullable: true),
-                    Fcostamount = table.Column<string>(nullable: true)
+                    WineName = table.Column<string>(nullable: true),
+                    WineCount = table.Column<int>(nullable: false),
+                    WineFee = table.Column<decimal>(type: "decimal(18,6)", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -65,6 +65,9 @@ namespace CYQK.Test.Model.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("TotalCount")
                         .HasColumnType("bigint");
 
