@@ -19,12 +19,7 @@ namespace CYQK.Test.Util
 {
     public class TimeJob : Job
     {
-        //private readonly TestContext _testContext;
-        //public TimeJob(TestContext testContext)
-        //{
-        //    _testContext = testContext;
-        //}
-        [Invoke(Begin = "2020-11-6 18:30", Interval = 1000 * 3600, SkipWhileExecuting = true)]
+        [Invoke(Begin = "2020-11-6 00:00", Interval = 1000 * 3600, SkipWhileExecuting = true)]
         public void DoTask()
         {
             //获取AccessToken
@@ -66,7 +61,6 @@ namespace CYQK.Test.Util
                 }
                 
             });
-            
         }
         public string GetInstance(string formInstId, string formCodeId, string accessToken)
         {
