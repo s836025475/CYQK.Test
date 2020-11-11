@@ -15,7 +15,7 @@ namespace CYQK.Test.Model.Examine
         [Key]
         public virtual long Id { get; set; }
         /// <summary>
-        /// 单据类型
+        /// 审核类型
         /// </summary>
         public virtual string Fbilltype { get; set; }
         /// <summary>

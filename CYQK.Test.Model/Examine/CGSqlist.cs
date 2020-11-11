@@ -32,7 +32,7 @@ namespace CYQK.Test.Model.Examine
         /// </summary>
         public virtual string Fbillid { get; set; }
         /// <summary>
-        /// 金额
+        /// 申请金额
         /// </summary>
         [Column(TypeName ="decimal(18,6)")]
         public virtual decimal Freqamount { get; set; }
