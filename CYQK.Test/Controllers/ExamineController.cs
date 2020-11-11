@@ -145,7 +145,7 @@ namespace CYQK.Test.Controllers
 
             JObject json = JObject.Parse(jsonRequest.ToString());
             List<PushLogs> pushlogs = GetPushLogs(json["data"]["pushLogs"].ToString());
-            if (pushlogs.Count() == 5)
+            if (pushlogs.Count() == 100)
             {
                 pageId = pushlogs.Last().Id;
                 pageType = "next";
