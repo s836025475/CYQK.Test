@@ -80,8 +80,10 @@ namespace CYQK.Test.Util
             decimal totalFee = 0;
             widgetValues.ForEach(w =>
             {
-                totalCount += int.Parse(w.Nu_1);
-                totalFee += decimal.Parse(w.Mo_0);
+                if(w.Nu_1 != "") 
+                    totalCount += int.Parse(w.Nu_1);
+                if(w.Mo_0 != "")
+                    totalFee += decimal.Parse(w.Mo_0);
             });
             CGSqlist cg = new CGSqlist()
             {
@@ -113,14 +115,16 @@ namespace CYQK.Test.Util
             List<CgsqListentry> cleList = new List<CgsqListentry>();
             foreach (var item in widgetValues)
             {
-                CgsqListentry cle = new CgsqListentry()
-                {
-                    Guid = Guid.NewGuid(),
-                    Fbillid = fbillid,//id
-                    WineName = item.Te_0,
-                    WineCount = int.Parse(item.Nu_1),
-                    WineFee = decimal.Parse(item.Mo_0)
-                };
+                CgsqListentry cle = new CgsqListentry();
+                cle.Guid = Guid.NewGuid();
+                cle.Fbillid = fbillid;//id
+                cle.WineName = item.Te_0;
+                cle.WineCount = 0;
+                cle.WineFee = 0;
+                if (item.Nu_1 != "")
+                    cle.WineCount += int.Parse(item.Nu_1);
+                if (item.Mo_0 != "")
+                    cle.WineFee += decimal.Parse(item.Mo_0);
                 cleList.Add(cle);
             }
             return cleList;

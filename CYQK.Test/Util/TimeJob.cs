@@ -28,7 +28,7 @@ namespace CYQK.Test.Util
         public void DoTask()
         {
             //获取AccessToken
-            string accessToken = GetAccessToken();
+            string accessToken = CallExternal.GetAccessToken();
             //获取外部接口日志
             long startTime = TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now.AddHours(-1));//开始时间
             long endTime = TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now);//结束时间
@@ -36,7 +36,6 @@ namespace CYQK.Test.Util
             string pageType = "first";//页码类型 prev=上一页，next=下一页，first=第一页，last=最后一页
             var pushLogs = GetExternalLog(accessToken, startTime, endTime, pageId, pageType);
             //获取实例
-            List<JObject> instance = new List<JObject>();
             pushLogs.ForEach(p =>
             {
                 try
@@ -75,16 +74,16 @@ namespace CYQK.Test.Util
             JObject param = new JObject();
             param.Add("formInstId", formInstId);
             param.Add("formCodeId", formCodeId);
-            string response = PostUrl(url, param.ToString(), "application/json");
+            string response = CallExternal.PostUrl(url, param.ToString(), "application/json");
             return response;
         }
         private string GetFlowRecord(string formInstId, string formCodeId)
         {
-            string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/getFlowRecord?accessToken=" + GetAccessToken();
+            string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/getFlowRecord?accessToken=" + CallExternal.GetAccessToken();
             JObject param = new JObject();
             param.Add("formInstId", formInstId);
             param.Add("formCodeId", formCodeId);
-            string response = PostUrl(url, param.ToString(), "application/json");
+            string response = CallExternal.PostUrl(url, param.ToString(), "application/json");
             return response;
         }
         private List<PushLogs> GetExternalLog(
@@ -107,7 +106,7 @@ namespace CYQK.Test.Util
             postParam.Add("startTime", startTime);
             postParam.Add("endTime", endTime);
             postParam.Add("pushType", "failed");
-            string jsonRequest = PostUrl(url, postParam.ToString(), "application/json");
+            string jsonRequest = CallExternal.PostUrl(url, postParam.ToString(), "application/json");
 
             JObject json = JObject.Parse(jsonRequest.ToString());
             List<PushLogs> pushlogs = GetPushLogs(json["data"]["pushLogs"].ToString());
@@ -119,53 +118,6 @@ namespace CYQK.Test.Util
                 pushlogs.AddRange(logs);
             }
             return pushlogs;
-        }
-
-        private string GetAccessToken()
-        {
-            JObject param = new JObject();
-            param.Add("appId", "SP15452095");
-            param.Add("eid", "15452095");
-            param.Add("secret", "dxjGOSdfAtTwCEqmQTDKdAzKfau7bK");
-            param.Add("timestamp", TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now));
-            param.Add("scope", "team");
-            String url = "https://yunzhijia.com/gateway/oauth2/token/getAccessToken";
-            string jsonRequest = PostUrl(url, param.ToString(), "application/json");
-            JObject resGroupJson = JObject.Parse(jsonRequest);
-            return resGroupJson["data"]["accessToken"].ToString();
-        }
-        /// <summary>
-        /// Post提交数据
-        /// </summary>
-        /// <param name="postUrl">URL</param>
-        /// <param name="paramData">参数</param>
-        /// <returns></returns>
-        public string PostUrl(string url, string postData, string contentType)
-        {
-            string result = "";
-            try
-            {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Method = "POST";
-                req.ContentType = contentType;// "application/x-www-form-urlencoded"
-                req.Timeout = 800;//请求超时时间
-                byte[] data = Encoding.UTF8.GetBytes(postData);
-                req.ContentLength = data.Length;
-                using (Stream reqStream = req.GetRequestStream())
-                {
-                    reqStream.Write(data, 0, data.Length);
-                    reqStream.Close();
-                }
-                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-                Stream stream = resp.GetResponseStream();
-                //获取响应内容
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    result = reader.ReadToEnd();
-                }
-            }
-            catch (Exception e) { }
-            return result;
         }
         private List<PushLogs> GetPushLogs(string jsonstr)
         {
