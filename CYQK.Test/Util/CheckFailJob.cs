@@ -87,7 +87,7 @@ namespace CYQK.Test.Util
                     string content = startTime + "——" + endTime + "云之家外部日志接口同步失败";
                     //发送邮件
                     SendMail mailService = new SendMail();
-                    bool fmailback = mailService.Send("836025475@qq.com", "s836025475@163.com", "云之家外部日志接口问题", content, "s836025475@163.com", "naduohua", "mail.shangyuan.cn", "", "");
+                    bool fmailback = mailService.Send("836025475@qq.com", "s836025475@163.com", "云之家外部日志接口问题", content, "s836025475@163.com", "naduohua", "smtp.163.com", "", "");
                 }
             });
         }

@@ -148,7 +148,7 @@ namespace CYQK.Test.Controllers
             postParam.Add("devType", "user");
             postParam.Add("startTime", startTime);
             postParam.Add("endTime", endTime);
-            postParam.Add("pushType", "failed");
+            postParam.Add("pushType", "all");
             string jsonRequest = CallExternal.PostUrl(url, postParam.ToString(), "application/json");
 
             JObject json = JObject.Parse(jsonRequest.ToString());

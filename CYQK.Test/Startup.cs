@@ -36,6 +36,7 @@ namespace CYQK.Test
             services.AddTimedJob();
 
             services.AddHangfire(r => r.UseSqlServerStorage("Data Source=.;Initial Catalog=MHSR;User ID=sa;Password=123qwe"));
+            //services.AddHangfire(r => r.UseSqlServerStorage("Data Source=.;Initial Catalog=MHSR;User ID=sa1;Password=888888"));
 
             services.AddSwaggerGen(c =>
             {
