@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CYQK.Test.Model.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20201113063133_InitialCreate")]
+    [Migration("20201113070016_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
