@@ -74,6 +74,14 @@ namespace CYQK.Test.Controllers
                     string pageId = null;//页码Id 上一页则传当前最小记录id，下一页则传当前最大id，首页或者最后页传null
                     string pageType = "first";//页码类型 prev=上一页，next=下一页，first=第一页，last=最后一页
                     var pushLogs = GetExternalLog(accessToken, startTime, endTime, pageId, pageType);
+                    List<string> insList = new List<string>();
+                    pushLogs.ForEach(p =>
+                    { 
+                        string ins = GetInstance(p.FormInstId, p.FormCodeId, accessToken);
+                        insList.Add(ins);
+                    });
+                    insList = insList.Where(i => i.Contains("true")).ToList();
+                    int totalCount = insList.Count();
                     //获取实例
                     pushLogs.ForEach(p =>
                     {
@@ -87,9 +95,9 @@ namespace CYQK.Test.Controllers
                             ParseEntity PE = new ParseEntity();
                             CGSqlist cg = PE.GetCGSQlist(jObject);
                             cg.FirstInput = false;
-                            var query = db.CGSqlist.Where(c => c.FormInstId.Equals(cg.FormInstId))
-                                        .Where(c => c.FormCodeId.Equals(cg.FormCodeId))
-                                        .AsNoTracking().ToList();
+                            var query =  db.CGSqlist.AsNoTracking()
+                                                    .Where(c => c.SerialNumber.Equals(cg.SerialNumber))
+                                                    .ToList();
                             if (query.Count == 0)
                             {
                                 //获取CgsqListentry
@@ -140,7 +148,7 @@ namespace CYQK.Test.Controllers
             postParam.Add("devType", "user");
             postParam.Add("startTime", startTime);
             postParam.Add("endTime", endTime);
-            postParam.Add("pushType", "all");
+            postParam.Add("pushType", "failed");
             string jsonRequest = CallExternal.PostUrl(url, postParam.ToString(), "application/json");
 
             JObject json = JObject.Parse(jsonRequest.ToString());
@@ -206,15 +214,14 @@ namespace CYQK.Test.Controllers
                     _testContext.CGSqlist.Add(cg);
                     _testContext.CgsqListentry.AddRange(cleList);
                     _testContext.Reqlist.AddRange(rlList);
-                    //_testContext.Reqlist.Add(rl);
-                    //数据添加日志
-                    var log = new TestLog
+                    
+                    var externalLog = new ExternalLog
                     {
-                        Id = Guid.NewGuid(),
-                        Input = text,
-                        CreationTime = DateTime.Now
+                        StartTime = cg.EventTime,
+                        EndTime = cg.EventTime,
+                        QueryState = QueryState.成功
                     };
-                    _testContext.TestLog.Add(log);
+                    _testContext.ExternalLog.Add(externalLog);
                     await _testContext.SaveChangesAsync();
                     //创建后台任务读取审批状态
                     //BackgroundJob.Schedule(() => new BackJob().GetProcess(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid), DateTime.Now.AddMinutes(3));
@@ -224,18 +231,7 @@ namespace CYQK.Test.Controllers
             }
             catch (Exception ex)
             {
-                using (var _testContext = new TestContext())
-                {
-                    var log = new TestLog
-                    {
-                        Id = Guid.NewGuid(),
-                        Output = ex.Message,
-                        CreationTime = DateTime.Now
-                    };
-                    _testContext.TestLog.Add(log);
-                    await _testContext.SaveChangesAsync();
-                    return new ReturnMessage { Success = false, Data = ex.Message.ToString() };
-                }
+                return new ReturnMessage { Success = false, Data = ex.Message.ToString() };
             }
             
         }

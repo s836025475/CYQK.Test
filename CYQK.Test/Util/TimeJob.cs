@@ -17,51 +17,108 @@ using System.Threading.Tasks;
 
 namespace CYQK.Test.Util
 {
-    public class TimeJob : Job
+    public class TimeJob //: Job
     {
-        [Invoke(Begin = "2020-11-6 00:00", Interval = 1000 * 3600, SkipWhileExecuting = true)]
+        //[Invoke(Begin = "2020-11-11 00:00", Interval = 1000 * 3600, SkipWhileExecuting = true)]
         public void DoTask()
         {
+            int totalCount = 0;
+            int count = 0;
             //获取AccessToken
             string accessToken = CallExternal.GetAccessToken();
             //获取外部接口日志
-            long startTime = TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now.AddHours(-1));//开始时间
+            DateTime time = DateTime.Today.AddDays(-13);//开始时间
+            using (var db = new TestContext())
+            {
+                var query = db.ExternalLog.OrderByDescending(e => e.EndTime).FirstOrDefault();
+                if (query != null)
+                    time = query.EndTime;
+            }
+            long startTime = TimeFormat.ToUnixTimestampByMilliseconds(time.AddMinutes(-1));//开始时间
             long endTime = TimeFormat.ToUnixTimestampByMilliseconds(DateTime.Now);//结束时间
             string pageId = null;//页码Id 上一页则传当前最小记录id，下一页则传当前最大id，首页或者最后页传null
             string pageType = "first";//页码类型 prev=上一页，next=下一页，first=第一页，last=最后一页
             var pushLogs = GetExternalLog(accessToken, startTime, endTime, pageId, pageType);
-            //获取实例
+            List<string> insList = new List<string>();
             pushLogs.ForEach(p =>
             {
-                try
-                {
-                    string ins = GetInstance(p.FormInstId, p.FormCodeId, accessToken);
-                    JObject jObject = JObject.Parse(ins);
+                string ins = GetInstance(p.FormInstId, p.FormCodeId, accessToken);
+                insList.Add(ins);
+            });
+            insList = insList.Where(i => i.Contains("true")).ToList();
+            totalCount = insList.Count();
+            //获取实例
+            try
+            {
+                insList.ForEach(p =>
+                { 
+                    JObject jObject = JObject.Parse(p);
                     if (jObject["success"].ToString() == "True")
                     {
-                        //解析数据存入数据库
-                        //获取CGSqlist
-                        ParseEntity PE = new ParseEntity();
-                        CGSqlist cg = PE.GetCGSQlist(jObject);
-                        cg.FirstInput = false;
-                        //获取CgsqListentry
-                        List<CgsqListentry> cleList = PE.GetCgsqListentry(jObject, cg.Fbillid);
-                        List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(p.FormInstId, p.FormCodeId)), cg.Fbillid);
+                        count += 1;
                         using (var db = new TestContext())
                         {
-                            db.CGSqlist.Add(cg);
-                            db.CgsqListentry.AddRange(cleList);
-                            db.Reqlist.AddRange(rlList);
-                            db.SaveChanges();
+                            //解析数据存入数据库
+                            //获取CGSqlist
+                            ParseEntity PE = new ParseEntity();
+                            CGSqlist cg = PE.GetCGSQlist(jObject);
+                            cg.FirstInput = false;
+                            var query = db.CGSqlist.AsNoTracking()
+                                                    .Where(c => c.SerialNumber.Equals(cg.SerialNumber))
+                                                    .ToList();
+                            if (query.Count == 0)
+                            {
+                                //获取CgsqListentry
+                                List<CgsqListentry> cleList = PE.GetCgsqListentry(jObject, cg.Fbillid);
+                                List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
+                                db.CGSqlist.Add(cg);
+                                db.CgsqListentry.AddRange(cleList);
+                                db.Reqlist.AddRange(rlList);
+                                db.SaveChanges();
+                            }
                         }
                     }
-                }
-                catch (Exception e)
+                });
+                using (var DbContext = new TestContext())
                 {
+                    ExternalLog log = new ExternalLog
+                    {
+                        StartTime = TimeFormat.ToLocalTimeTime(startTime),
+                        EndTime = TimeFormat.ToLocalTimeTime(endTime),
+                        QueryState = QueryState.成功,
+                        FailTotalNum = totalCount,
+                        TakeStatus = TakeStatus.完全同步,
+                        CatchNum = count,
+                        CreationTime = TimeFormat.ToLocalTimeTime(endTime),
+                        TakeTime = TimeFormat.ToLocalTimeTime(endTime)
+                    };
+                    DbContext.ExternalLog.Add(log);
+                    DbContext.SaveChanges();
                 }
+            }
+            catch (Exception e)
+            {
                 
-            });
-        }
+                using (var DbContext = new TestContext())
+                {
+                    ExternalLog log = new ExternalLog
+                    {
+                        StartTime = TimeFormat.ToLocalTimeTime(startTime),
+                        EndTime = TimeFormat.ToLocalTimeTime(endTime),
+                        QueryState = QueryState.失败,
+                        FailTotalNum = totalCount,
+                        TakeStatus = TakeStatus.部分同步,
+                        CatchNum = count,
+                        CreationTime = TimeFormat.ToLocalTimeTime(endTime),
+                        TakeTime = TimeFormat.ToLocalTimeTime(endTime)
+                    };
+                    if (totalCount == 0 || count == 0)
+                        log.TakeStatus = TakeStatus.未同步;
+                    DbContext.ExternalLog.Add(log);
+                    DbContext.SaveChanges();
+                }
+            }
+}
         public string GetInstance(string formInstId, string formCodeId, string accessToken)
         {
             string url = "https://yunzhijia.com/gateway/workflow/form/thirdpart/viewFormInst?accessToken=" + accessToken;

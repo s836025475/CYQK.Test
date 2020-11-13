@@ -102,6 +102,42 @@ namespace CYQK.Test.Model.Migrations
                     b.ToTable("t_CgsqListentry");
                 });
 
+            modelBuilder.Entity("CYQK.Test.Model.Examine.ExternalLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CatchNum")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FailTotalNum")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QueryState")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TakeStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TakeTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExternalLog");
+                });
+
             modelBuilder.Entity("CYQK.Test.Model.Examine.Reqlist", b =>
                 {
                     b.Property<long>("Id")
@@ -133,26 +169,6 @@ namespace CYQK.Test.Model.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("t_reqlist");
-                });
-
-            modelBuilder.Entity("CYQK.Test.Model.TestLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Input")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Output")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TestLog");
                 });
 #pragma warning restore 612, 618
         }

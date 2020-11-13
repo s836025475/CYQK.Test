@@ -3,10 +3,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CYQK.Test.Model.Migrations
 {
-    public partial class Create : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ExternalLog",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartTime = table.Column<DateTime>(nullable: false),
+                    EndTime = table.Column<DateTime>(nullable: false),
+                    QueryState = table.Column<int>(nullable: false),
+                    FailTotalNum = table.Column<int>(nullable: false),
+                    TakeStatus = table.Column<int>(nullable: false),
+                    CatchNum = table.Column<int>(nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    TakeTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExternalLog", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "t_CGSqlist",
                 columns: table => new
@@ -68,24 +88,13 @@ namespace CYQK.Test.Model.Migrations
                 {
                     table.PrimaryKey("PK_t_reqlist", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "TestLog",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Input = table.Column<string>(nullable: true),
-                    Output = table.Column<string>(nullable: true),
-                    CreationTime = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TestLog", x => x.Id);
-                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ExternalLog");
+
             migrationBuilder.DropTable(
                 name: "t_CGSqlist");
 
@@ -94,9 +103,6 @@ namespace CYQK.Test.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_reqlist");
-
-            migrationBuilder.DropTable(
-                name: "TestLog");
         }
     }
 }

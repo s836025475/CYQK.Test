@@ -13,20 +13,7 @@ namespace CYQK.Test.Util
     {
         public void Job(int times)
         {
-            using (var db = new TestContext())
-            {
-                var log = new TestLog
-                {
-                    Id = Guid.NewGuid(),
-                    Input = "BackJob",
-                    CreationTime = DateTime.Now
-                };
-                db.TestLog.Add(log);
-                db.SaveChanges();
-                times++;
-                if(times < 5 )
-                    BackgroundJob.Schedule(() => new BackJob().Job(times), DateTime.Now.AddSeconds(5));
-            }
+            //BackgroundJob.Schedule(() => new BackJob().Job(times), DateTime.Now.AddSeconds(5));
         }
         //后台任务，获取审批流
         //public void GetProcess(JObject Json, string fbillid)

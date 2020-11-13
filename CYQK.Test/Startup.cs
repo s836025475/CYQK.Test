@@ -96,35 +96,8 @@ namespace CYQK.Test
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            app.Map("/index", r =>
-            {
-                r.Run(context =>
-                {
-                    //任务每分钟执行一次
-                    RecurringJob.AddOrUpdate(() => Console.WriteLine($"ASP.NET Core LineZero"), Cron.Minutely());
-                    return context.Response.WriteAsync("ok");
-                });
-            });
-
-            app.Map("/one", r =>
-            {
-                r.Run(context =>
-                {
-                    //任务执行一次
-                    BackgroundJob.Enqueue(() => Console.WriteLine($"ASP.NET Core One Start LineZero{DateTime.Now}"));
-                    return context.Response.WriteAsync("ok");
-                });
-            });
-
-            app.Map("/await", r =>
-            {
-                r.Run(context =>
-                {
-                    //任务延时两分钟执行
-                    BackgroundJob.Schedule(() => Console.WriteLine($"ASP.NET Core await LineZero{DateTime.Now}"), TimeSpan.FromMinutes(2));
-                    return context.Response.WriteAsync("ok");
-                });
-            });
+            RecurringJob.AddOrUpdate(() => new CheckFailJob().DoCheck(), Cron.Daily);
+            RecurringJob.AddOrUpdate(() => new TimeJob().DoTask(), Cron.Hourly);
         }
     }
 }
