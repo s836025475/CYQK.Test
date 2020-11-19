@@ -57,6 +57,15 @@ namespace CYQK.Test.Util
                                 ParseEntity PE = new ParseEntity();
                                 CGSqlist cg = PE.GetCGSQlist(jObject);
                                 cg.FirstInput = false;
+                                //审批流
+                                List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
+                                rlList.ForEach(r =>
+                                {
+                                    var list = db.Reqlist.AsNoTracking().Where(c => c.CreateTime == r.CreateTime)
+                                                                        .Where(c => c.Fbillno == r.Fbillno).ToList();
+                                    if (list.Count() == 0)
+                                        db.Reqlist.Add(r);
+                                });
                                 var query = db.CGSqlist.AsNoTracking()
                                                     .Where(c => c.SerialNumber.Equals(cg.SerialNumber))
                                                     .ToList();
@@ -65,12 +74,10 @@ namespace CYQK.Test.Util
 
                                     //获取CgsqListentry
                                     List<CgsqListentry> cleList = PE.GetCgsqListentry(jObject, cg.Fbillid);
-                                    List<Reqlist> rlList = PE.GetReqlist(JObject.Parse(GetFlowRecord(cg.FormInstId, cg.FormCodeId)), cg.Fbillid);
                                     db.CGSqlist.Add(cg);
                                     db.CgsqListentry.AddRange(cleList);
-                                    db.Reqlist.AddRange(rlList);
-                                    db.SaveChanges();
                                 }
+                                db.SaveChanges();
                             }
                         }
                     });
